@@ -21,11 +21,10 @@ MATCH (p:Individu) -[:Viu] ->(h:Habitatge{any_padro:1838, municipi:"SFLL"}) <-[:
 RETURN h.numero, collect(p.name) as familiares, s.name as jefe
 
 
-//C: 
-    
-MATCH (n:Individu{name:"miguel", surname1:"estape", surname2:"bofill"}) -[:Same_as]- (p:Individu)
-RETURN count(n), collect(distinct {original:n.name, equivalente:p.name}) as noms, 
-collect(distinct {original:n.surname1, equivalente:p.surname1}) as cognoms, collect(distinct {original:n.surname2, equivalente:p.surname2}) as segons_cognoms
+//C:   
+
+match (n:Individu{name:"miguel", surname1:"estape", surname2:"bofill"}) -[:Same_as]- (p:Individu)
+return count(n), collect(distinct p.name) as noms, collect(distinct p.surname1) as cognoms, collect(distinct p.surname2) as segons_cognoms
 
 
 //D:
