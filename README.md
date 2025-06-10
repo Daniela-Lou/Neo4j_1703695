@@ -20,5 +20,3 @@ Aquest repositori conté el projecte realitzat per a l'assignatura de Bases de D
 ## Requisits
 - Neo4j 4.x o superior
 - Plugin Graph Data Science Library (per a les anàlisis avançades)
-
-Els resultats es poden visualitzar tant en format taula com en mode gràfic a l'interficie de Neo4j Browser.
