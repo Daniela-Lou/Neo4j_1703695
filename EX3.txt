@@ -1,0 +1,75 @@
+//Exercici 2
+
+//A
+
+CALL gds.wcc.stream({
+  nodeProjection: ['Individual', 'House'],
+  relationshipProjection: {
+    LIVES_IN: {
+      type: 'LIVES_IN',
+      orientation: 'UNDIRECTED'
+    }
+  }
+})
+YIELD nodeId, componentId
+WITH componentId, COUNT(nodeId) AS size
+RETURN componentId, size
+ORDER BY size DESC
+LIMIT 10;
+
+
+//B:
+
+MATCH (i:Individual)-[:LIVES_IN]->(h:House) RETURN h.municipality AS municipi, h.year_padron AS any, COUNT(*) AS num_parelles ORDER BY municipi, any;
+
+
+//C: 
+    
+MATCH (h1:House), (h2:House)
+WHERE h1.house_id = h2.house_id AND h1.year_padron < h2.year_padron
+MERGE (h1)-[:MATEIX_HAB]->(h2);
+
+//D:
+    
+CALL gds.graph.project(
+  'graf_individu_habitatge',
+  ['Individual', 'House'],
+  {
+    LIVES_IN: {
+      type: 'LIVES_IN',
+      orientation: 'UNDIRECTED'
+    },
+    IS_FAMILY: {
+      type: 'IS_FAMILY',
+      orientation: 'UNDIRECTED'
+    },
+    MATEIX_HAB: {
+      type: 'MATEIX_HAB',
+      orientation: 'UNDIRECTED'
+    }
+  }
+);
+
+
+//E: 
+
+CALL gds.nodeSimilarity.write({
+  nodeProjection: ['Individual', 'House'],
+  relationshipProjection: {
+    LIVES_IN: {
+      type: 'LIVES_IN',
+      orientation: 'UNDIRECTED'
+    },
+    IS_FAMILY: {
+      type: 'IS_FAMILY',
+      orientation: 'UNDIRECTED'
+    },
+    MATEIX_HAB: {
+      type: 'MATEIX_HAB',
+      orientation: 'UNDIRECTED'
+    }
+  },
+  writeRelationshipType: 'SIMILAR_TO',
+  writeProperty: 'similarityScore'
+});
+
