@@ -1,7 +1,7 @@
-//Exercici 2
+//Exercici 3
 
 //A
-
+1)
 CALL gds.wcc.stream({
   nodeProjection: ['Individual', 'House'],
   relationshipProjection: {
@@ -17,20 +17,24 @@ RETURN componentId, size
 ORDER BY size DESC
 LIMIT 10;
 
-
-//B:
-
+2)
 MATCH (i:Individual)-[:LIVES_IN]->(h:House) RETURN h.municipality AS municipi, h.year_padron AS any, COUNT(*) AS num_parelles ORDER BY municipi, any;
 
+3)
+CALL gds.wcc.stream('individusHabitatges')
+YIELD nodeId, componentId
+WITH gds.util.asNode(nodeId) AS node, componentId 
+WITH componentId, collect(DISTINCT labels(node)) AS tipusNodes
+WHERE NOT any(etiqueta IN tipusNodes WHERE etiqueta = 'Habitatge') 
+RETURN count(DISTINCT componentId) AS componentsSenseHabitatge
 
-//C: 
-    
+//B: 
+1)
 MATCH (h1:House), (h2:House)
 WHERE h1.house_id = h2.house_id AND h1.year_padron < h2.year_padron
 MERGE (h1)-[:MATEIX_HAB]->(h2);
 
-//D:
-    
+2)
 CALL gds.graph.project(
   'graf_individu_habitatge',
   ['Individual', 'House'],
@@ -50,9 +54,7 @@ CALL gds.graph.project(
   }
 );
 
-
-//E: 
-
+3)
 CALL gds.nodeSimilarity.write({
   nodeProjection: ['Individual', 'House'],
   relationshipProjection: {
